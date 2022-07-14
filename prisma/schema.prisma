@@ -1,0 +1,41 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  school_id   Int @unique
+  username    String
+  displayName String
+  first_name  String
+  last_name   String
+  profileUrl  String
+  email       String
+  photo       String
+  status      String
+  friends     Int[] @unique
+  Stats       Stats?
+  
+  createdAt DateTime @default(now())
+  updateAt  DateTime @updatedAt 
+
+  // @@map("users")
+}
+
+model Stats {
+  id      Int @unique
+  UserId  Int @unique
+  owner   User @relation(fields: [UserId], references: [school_id])
+
+  wins    Int
+  losses  Int
+  ladder_level  Int
+  // achievements  String?
+}
