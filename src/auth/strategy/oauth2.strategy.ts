@@ -1,6 +1,5 @@
 import { Injectable, Param, ParseIntPipe } from "@nestjs/common";
 import { PassportStrategy } from "@nestjs/passport";
-import { access } from "fs";
 import { Strategy, Profile } from "passport-42"
 import { PrismaService } from "src/prisma/prisma.service";
 import { User42Dto } from "src/user/dto/User42.dto";
@@ -20,6 +19,7 @@ export class FortyTwoStrategy extends PassportStrategy(Strategy){
     async validate(accessToken: string, refreshToken: string, profile: Profile) {
         const user: User42Dto = {
             id:                 Number(profile.id),
+            unique_name:        profile.id,
             username:           profile.username,
             displayName:        profile.displayName,
             first_name:         profile['name']['givenName'],

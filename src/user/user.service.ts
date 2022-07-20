@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { User } from '@prisma/client';
 import { PrismaService } from 'src/prisma/prisma.service';
+import { UpdateStatusDto, UploadAvatarDto, UniqueNameDto } from './dto';
 
 @Injectable()
 export class UserService {
@@ -53,5 +54,51 @@ export class UserService {
                 },
             });
             return user.status;
+        }
+
+        async UpdateStatus(userId: number, dto: UpdateStatusDto) {
+            await this.prisma.user.update({
+                where: {
+                    school_id: userId,
+                },
+                data: {
+                    ...dto,
+                },
+            });
+        }
+
+        async ChangeUniqueName(userId: number, dto: UniqueNameDto) {
+            const check_unique = await this.prisma.user.findUnique({
+                where: {
+                    unique_name: dto.unique_name,
+                },
+            });
+            if (check_unique) {
+                return "Unique Name already taken, please choose another one"
+            }
+            const user = await this.prisma.user.findUnique({
+                where: {
+                    school_id: userId,
+                },
+            });
+            await this.prisma.user.update({
+                where: {
+                    school_id: userId,
+                },
+                data: {
+                    ...dto,
+                },
+            });
+        }
+
+        async UploadAvatar(userId: number, dto: UploadAvatarDto) {
+            await this.prisma.user.update({
+                where: {
+                    school_id: userId,
+                },
+                data: {
+                    ...dto,
+                },
+            });
         }
 }

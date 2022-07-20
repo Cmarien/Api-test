@@ -12,6 +12,7 @@ datasource db {
 
 model User {
   school_id   Int @unique
+  unique_name String @unique
   username    String
   displayName String
   first_name  String
@@ -20,8 +21,9 @@ model User {
   email       String
   photo       String
   status      String
-  friends     Int[] @unique
+  friends     Int[]
   Stats       Stats?
+  match_history Game[]
   
   createdAt DateTime @default(now())
   updateAt  DateTime @updatedAt 
@@ -30,7 +32,6 @@ model User {
 }
 
 model Stats {
-  id      Int @unique
   UserId  Int @unique
   owner   User @relation(fields: [UserId], references: [school_id])
 
@@ -38,4 +39,15 @@ model Stats {
   losses  Int
   ladder_level  Int
   // achievements  String?
+}
+
+model Game {
+  id              Int @id @default(autoincrement())
+  UserId          Int
+  owner           User @relation(fields: [UserId], references: [school_id])
+  tag             String
+  winner          Int
+  looser          Int
+  winners_points  Int
+  loosers_points  Int
 }

@@ -1,5 +1,6 @@
 export class User42Dto {
   id:               number
+  unique_name:      string
   username:         string
   displayName:      string
   first_name:       string

@@ -1,15 +1,11 @@
 import { Injectable } from "@nestjs/common";
 import { PrismaService } from "src/prisma/prisma.service";
-import { JwtService } from "@nestjs/jwt";
-import { ConfigService } from "@nestjs/config";
 import { User42Dto } from "src/user/dto/User42.dto";
 
 @Injectable()
 export class AuthService {
     constructor(
         private prisma: PrismaService,
-        private jwt: JwtService,
-        private config: ConfigService,
         ){}
 
 
@@ -28,6 +24,7 @@ export class AuthService {
             const ret = await this.prisma.user.create({
                 data: {
                     school_id:      dto.id,
+                    unique_name:    dto.unique_name,
                     username:       dto.username,
                     displayName:    dto.displayName,
                     first_name:     dto.first_name,
@@ -38,6 +35,14 @@ export class AuthService {
                     status:         "online",
                 },
             });
+            const stats = await this.prisma.stats.create({
+                data: {
+                    UserId:         dto.id,
+                    wins:           0,
+                    losses:         0,
+                    ladder_level:   0,
+                }
+            })
             return ret;
         }
         catch (error){
